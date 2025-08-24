@@ -30,9 +30,8 @@ class EightPuzzle:
             [7, 6, 5]
         )
         self.gVal = gVal
-        self.hVal = self.manhattanDistance()
+        self.hVal = self.getManhattanDistance()
         self.fVal = self.gVal + self.hVal
-
 
     def __gt__(self, other):
         return self.fVal > other.fVal
@@ -40,42 +39,34 @@ class EightPuzzle:
     def isGoalState(self):
         return np.array_equal(self.board, self.goalState)
 
-    def getPossibleMoves(self):
-        possibleMoves = []
-        pass
-
-        return possibleMoves
-
     def validMove(self, row, col):
         return 0 <= row < self.bSize and 0 <= col < self.bSize
 
-    def makeMove(self, newBoard):
-        self.gVal += 1
-        self.board = newBoard
-
     def printBoard(self):
+        top =    "┏━━━┳━━━┳━━━┓"
+        middle = "┣━━━╋━━━╋━━━┫"
+        bottom = "┗━━━┻━━━┻━━━┛"
+        print(top)
         for i in range(self.bSize):
-            print(" ----------------")
+            print("┃", end="")
             for j in range(self.bSize):
-                print(" | ", end="")
-                if self.board[i][j] == 0:
-                    print(" ", end=" ")
-                else:
-                    print(self.board[i][j], end=" ")
-                if j == self.bSize - 1:
-                    print(" | ")
-        print(" ----------------")
+                val = self.board[i][j]
+                print(f" {val if val != 0 else ' '} ┃", end="")
+            print()
+            if i < self.bSize - 1:
+                print(middle)
+        print(bottom)
         print()
 
-    def getBlankTilePosition(self):
+    def getBlankTile(self):
         for i in range(self.bSize):
             for j in range(self.bSize):
                 if self.board[i][j] == 0:
                     return (i, j)
                 
-    def getPossibleMoves(self):
+    def getMoves(self):
         possibleMoves = []
-        blankPos = self.getBlankTilePosition()
+        blankPos = self.getBlankTile()
                        # Up,    Down,    Left,   Right
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  
 
@@ -87,10 +78,9 @@ class EightPuzzle:
                 newBoard[blankPos[0]][blankPos[1]] = newBoard[newRow][newCol]
                 newBoard[newRow][newCol] = 0
                 possibleMoves.append(EightPuzzle(board=newBoard, parent=self, gVal=self.gVal + 1))
-
         return possibleMoves
 
-    def manhattanDistance(self):
+    def getManhattanDistance(self):
         distance = 0
         state = np.array(self.board)
         goal = np.array(self.goalState)
@@ -104,7 +94,6 @@ class EightPuzzle:
         openList = []
         closedList = []
         heapq.heappush(openList, (self.fVal, self))
-
         while openList:
             _, current = heapq.heappop(openList)
             if current.isGoalState():
@@ -127,15 +116,12 @@ class EightPuzzle:
 
             closedList.append(tuple(map(tuple, current.board)))
 
-            possibleMoves = current.getPossibleMoves()
+            possibleMoves = current.getMoves()
             for move in possibleMoves:
                 heapq.heappush(openList, (move.fVal, move))
 
         print("No solution found.")
         return
-
-
-
 
 TilePuzzle = EightPuzzle(initialState21)
 TilePuzzle.AStarSearch()
