@@ -1,0 +1,9 @@
+My huristic function is a conflict-based huristic that finds the number of missmatched pairs of tiles and increases the cost of that states heuristic.
+    For each 'W' tile:
+        Count the number of 'B' tiles to the left of it.
+    
+    For each 'B' tile:
+        Count the number of 'W' tiles to the right of it.
+
+This heuristic promotes puzzle states that have less conflicts and helps the A* search function get closer to the goal state.
+
