@@ -47,7 +47,7 @@ def parse_sentence(sentence):
     return {'type': rule_type, 'consequent': atom, 'antecedents': antecedents}
 
 
-def load_kb_from_lines(lines):
+def load_kb(lines):
     global rules, facts
     rules = []
     facts = set()
@@ -122,7 +122,7 @@ def main():
         if line:
             lines.append(line)
 
-    load_kb_from_lines(lines)
+    load_kb(lines)
     
     print("\nKnowledge base loaded.")
     print("Ask questions like 'P?' or type 'quit' to exit.\n")

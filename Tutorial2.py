@@ -42,14 +42,14 @@ print("Type 'done' when finished.\n")
 
 sentences = []
 while True:
-    line = input("> ").strip()
+    line = input("> ").upper().strip()
     if line.lower() == "done":
         break
     if line:
         sentences.append(line)
 
 print("\nEnter all propositional variables separated by spaces (e.g., A B C D):")
-variables = input("> ").split()
+variables = input("> ").upper().split()
 
 combinations = make_truth_combinations(len(variables))
 
