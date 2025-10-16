@@ -1,37 +1,45 @@
-# Generate every combination of truth values for n variables
-def generate_combinations(n):
+def make_truth_combinations(number_of_variables):
     combinations = []
-    for i in range(2 ** n):
-        combo = []
-        for j in range(n):
-            value = (i >> j) & 1
-            combo.append(bool(value))
-        combinations.append(combo)
+    total_combinations = 2 ** number_of_variables
+
+    for i in range(total_combinations):
+        single_combination = []
+        for bit_position in range(number_of_variables):
+            bit_value = (i >> bit_position) & 1
+            single_combination.append(bool(bit_value))
+        combinations.append(single_combination)
+
     return combinations
 
 
-# Evaluate each sentence with the given variables
-def evaluate_sentences(sentences, variables, values):
-    env = dict(zip(variables, values))
+def check_sentences_are_true(sentences, variables, truth_values):
+    environment = dict(zip(variables, truth_values))
     results = []
-    for s in sentences:
-        expr = s
-        # Replace variables with their truth values
+
+    for sentence in sentences:
+        expression = sentence
+
+        # Replace each variable with its truth value
         for var in variables:
-            expr = expr.replace(var, str(env[var]))
-        # Format sentences for python commands
-        expr = expr.replace('^', ' and ')
-        expr = expr.replace('v', ' or ')
-        expr = expr.replace('¬', ' not ')
-        expr = expr.replace('->', ' <= ')
-        # Evaluate and record result
-        results.append(eval(expr))
+            expression = expression.replace(var, str(environment[var]))
+
+        # Convert logical symbols to Python operators
+        expression = expression.replace('^', ' and ')
+        expression = expression.replace('v', ' or ')
+        expression = expression.replace('¬', ' not ')
+        expression = expression.replace('->', ' <= ')
+
+        # Evaluate the expression
+        results.append(eval(expression))
+
+    # Return True only if all sentences are True for this combination
     return all(results)
 
 
-# === MAIN PROGRAM ===
+# ---------- Main Function ----------
+print("Enter your propositional sentences (one per line).")
+print("Type 'done' when finished.\n")
 
-print("\nEnter your propositional sentences (one per line). Type 'done' when finished:")
 sentences = []
 while True:
     line = input("> ").strip()
@@ -40,19 +48,19 @@ while True:
     if line:
         sentences.append(line)
 
-# Input variaqble names
-variables = input("\nEnter all propositional variables separated by spaces (e.g. A B C D): ").split()
+print("\nEnter all propositional variables separated by spaces (e.g., A B C D):")
+variables = input("> ").split()
 
-# Compute all combinations of truth values
-combinations = generate_combinations(len(variables))
+combinations = make_truth_combinations(len(variables))
 
-# Print the models for each set of sentences
-print("\n--- Models that satisfy the sentences ---")
-found = False
-for combo in combinations:
-    if evaluate_sentences(sentences, variables, combo):
-        print(dict(zip(variables, combo)))
-        found = True
+print("\n--- Models that satisfy all sentences ---")
+found_model = False
 
-if not found:
+for combination in combinations:
+    if check_sentences_are_true(sentences, variables, combination):
+        model = dict(zip(variables, combination))
+        print(model)
+        found_model = True
+
+if not found_model:
     print("No models found.")
