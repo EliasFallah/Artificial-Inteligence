@@ -25,7 +25,7 @@ def check_sentences_are_true(sentences, variables, truth_values):
 
         # Convert logical symbols to Python operators
         expression = expression.replace('^', ' and ')
-        expression = expression.replace('v', ' or ')
+        expression = expression.replace('V', ' or ')
         expression = expression.replace('¬', ' not ')
         expression = expression.replace('->', ' <= ')
 
